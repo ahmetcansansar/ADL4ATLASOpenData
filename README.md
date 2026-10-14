@@ -46,9 +46,15 @@ commands. The complete list of files, cross-sections and sums of weights is in
 | Software | Version used for the article | Notes |
 |---|---|---|
 | CutLang | v2.15.2 (`ad940e8`) | needs ROOT, flex and bison to build |
-| ROOT | 6.36.12 | with PyROOT (the Python bindings) |
+| ROOT | 6.36.12 | with PyROOT, Davix/xrootd (for running using urls) |
 | Python | 3.9 or newer | packages: `pyyaml`, `numpy`, `uproot` |
 | OS | Linux or macOS | tested on macOS 26 (arm64) |
+
+Streaming the samples over `http://` needs ROOT built with Davix (`root-config --has-davix`
+should print `yes`); ROOT's built-in web reader cannot open the `opendata.cern.ch` links.
+Alternatively, set `ntuple_base_url` in `.yaml` configs to the XRootD address
+`root://eospublic.cern.ch//eos/opendata/atlas/OutreachDatasets/2020-01-22` (needs ROOT with
+XRootD, `root-config --has-xrootd`), or download the files (`docs/download.md`).
 
 ## Installation
 
@@ -60,7 +66,7 @@ cd CLA && make -j4 && cd ../..        # requires ROOT (root-config in PATH), fle
 export CUTLANG_DIR=$PWD/CutLang
 
 # 2. This repository and its Python dependencies
-git clone https://github.com/<org>/ADL4ATLASOpenData.git
+git clone https://github.com/ahmetcansansar/ADL4ATLASOpenData.git
 cd ADL4ATLASOpenData
 python3 -m pip install pyyaml numpy uproot
 python3 -c "import ROOT"              # check that PyROOT is available

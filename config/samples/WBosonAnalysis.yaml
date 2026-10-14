@@ -1,0 +1,530 @@
+# WBosonAnalysis: input samples, normalisation and merge groups.
+#
+# samples:  ntuple path relative to ntuple_base_url; for MC the cross-section [pb],
+#           sum of weights and filter efficiency. Each MC sample is scaled by
+#           1/(sumw*eff) after the run (XSection and Lumi are applied in the ADL).
+# groups:   samples summed by scripts/normalize_merge.py into <outdir>/<group>.root.
+analysis: WBosonAnalysis
+adl: analyses/WBosonAnalysis/WBosonAnalysis.adl
+ntuple_base_url: http://opendata.cern.ch/eos/opendata/atlas/OutreachDatasets/2020-01-22
+normalisation:
+  source: ATLAS Open Data 13 TeV C++ framework v1.1, Plotting/inputfiles/Files_WBoson.txt
+  formula: MC histograms x 1/(sumw*eff); Lumi and XSection are applied per event in the ADL
+samples:
+  data_A:
+    type: data
+    file: 1lep/Data/data_A.1lep.root
+  data_B:
+    type: data
+    file: 1lep/Data/data_B.1lep.root
+  data_C:
+    type: data
+    file: 1lep/Data/data_C.1lep.root
+  data_D:
+    type: data
+    file: 1lep/Data/data_D.1lep.root
+  Zee:
+    type: mc
+    dsid: 361106
+    file: 1lep/MC/mc_361106.Zee.1lep.root
+    xsec: 1950.5295
+    sumw: 150277594200.0
+    eff: 1.0
+  Zmumu:
+    type: mc
+    dsid: 361107
+    file: 1lep/MC/mc_361107.Zmumu.1lep.root
+    xsec: 1950.6321
+    sumw: 147334691090.0
+    eff: 1.0
+  Ztautau:
+    type: mc
+    dsid: 361108
+    file: 1lep/MC/mc_361108.Ztautau.1lep.root
+    xsec: 1950.6321
+    sumw: 56171652547.3
+    eff: 1.0
+  ZqqZll:
+    type: mc
+    dsid: 363356
+    file: 1lep/MC/mc_363356.ZqqZll.1lep.root
+    xsec: 2.20355112
+    sumw: 3439266.11559
+    eff: 1.0
+  WqqZll:
+    type: mc
+    dsid: 363358
+    file: 1lep/MC/mc_363358.WqqZll.1lep.root
+    xsec: 3.4328
+    sumw: 241438.72705
+    eff: 1.0
+  WpqqWmlv:
+    type: mc
+    dsid: 363359
+    file: 1lep/MC/mc_363359.WpqqWmlv.1lep.root
+    xsec: 24.708
+    sumw: 998250.783475
+    eff: 1.0
+  WplvWmqq:
+    type: mc
+    dsid: 363360
+    file: 1lep/MC/mc_363360.WplvWmqq.1lep.root
+    xsec: 24.724
+    sumw: 1069526.41899
+    eff: 1.0
+  WlvZqq:
+    type: mc
+    dsid: 363489
+    file: 1lep/MC/mc_363489.WlvZqq.1lep.root
+    xsec: 11.42
+    sumw: 1111991.15979
+    eff: 1.0
+  llll:
+    type: mc
+    dsid: 363490
+    file: 1lep/MC/mc_363490.llll.1lep.root
+    xsec: 1.2578
+    sumw: 7538705.8077
+    eff: 1.0
+  lllv:
+    type: mc
+    dsid: 363491
+    file: 1lep/MC/mc_363491.lllv.1lep.root
+    xsec: 4.6049
+    sumw: 5441475.00407
+    eff: 1.0
+  llvv:
+    type: mc
+    dsid: 363492
+    file: 1lep/MC/mc_363492.llvv.1lep.root
+    xsec: 12.466
+    sumw: 5039259.9696
+    eff: 1.0
+  lvvv:
+    type: mc
+    dsid: 363493
+    file: 1lep/MC/mc_363493.lvvv.1lep.root
+    xsec: 3.2286
+    sumw: 1727991.07441
+    eff: 1.0
+  ttbar_lep:
+    type: mc
+    dsid: 410000
+    file: 1lep/MC/mc_410000.ttbar_lep.1lep.root
+    xsec: 452.693559
+    sumw: 49296600.0
+    eff: 1.0
+  single_top_tchan:
+    type: mc
+    dsid: 410011
+    file: 1lep/MC/mc_410011.single_top_tchan.1lep.root
+    xsec: 44.152
+    sumw: 4986200.0
+    eff: 1.0
+    note: event weight uses sign(mcWeight); sumw = generated events
+  single_antitop_tchan:
+    type: mc
+    dsid: 410012
+    file: 1lep/MC/mc_410012.single_antitop_tchan.1lep.root
+    xsec: 26.276
+    sumw: 4989800.0
+    eff: 1.0
+    note: event weight uses sign(mcWeight); sumw = generated events
+  single_top_wtchan:
+    type: mc
+    dsid: 410013
+    file: 1lep/MC/mc_410013.single_top_wtchan.1lep.root
+    xsec: 35.845486
+    sumw: 4865800.0
+    eff: 1.0
+    note: event weight uses sign(mcWeight); sumw = generated events
+  single_antitop_wtchan:
+    type: mc
+    dsid: 410014
+    file: 1lep/MC/mc_410014.single_antitop_wtchan.1lep.root
+    xsec: 35.824406
+    sumw: 4945600.0
+    eff: 1.0
+    note: event weight uses sign(mcWeight); sumw = generated events
+  single_top_schan:
+    type: mc
+    dsid: 410025
+    file: 1lep/MC/mc_410025.single_top_schan.1lep.root
+    xsec: 2.06121
+    sumw: 997800.0
+    eff: 1.0
+    note: event weight uses sign(mcWeight); sumw = generated events
+  single_antitop_schan:
+    type: mc
+    dsid: 410026
+    file: 1lep/MC/mc_410026.single_antitop_schan.1lep.root
+    xsec: 1.288662
+    sumw: 995400.0
+    eff: 1.0
+    note: event weight uses sign(mcWeight); sumw = generated events
+  Wmunu_PTV0_70_CVetoBVeto:
+    type: mc
+    dsid: 364156
+    file: 1lep/MC/mc_364156.Wmunu_PTV0_70_CVetoBVeto.1lep.root
+    xsec: 15317.171239
+    sumw: 16619290.3298
+    eff: 1.0
+  Wmunu_PTV0_70_CFilterBVeto:
+    type: mc
+    dsid: 364157
+    file: 1lep/MC/mc_364157.Wmunu_PTV0_70_CFilterBVeto.1lep.root
+    xsec: 2431.204019
+    sumw: 5643599.11526
+    eff: 1.0
+  Wmunu_PTV0_70_BFilter:
+    type: mc
+    dsid: 364158
+    file: 1lep/MC/mc_364158.Wmunu_PTV0_70_BFilter.1lep.root
+    xsec: 828.465384
+    sumw: 10403012.6599
+    eff: 1.0
+  Wmunu_PTV70_140_CVetoBVeto:
+    type: mc
+    dsid: 364159
+    file: 1lep/MC/mc_364159.Wmunu_PTV70_140_CVetoBVeto.1lep.root
+    xsec: 617.439593
+    sumw: 5418398.88082
+    eff: 1.0
+  Wmunu_PTV70_140_CFilterBVeto:
+    type: mc
+    dsid: 364160
+    file: 1lep/MC/mc_364160.Wmunu_PTV70_140_CFilterBVeto.1lep.root
+    xsec: 225.006704
+    sumw: 3693885.78953
+    eff: 1.0
+  Wmunu_PTV70_140_BFilter:
+    type: mc
+    dsid: 364161
+    file: 1lep/MC/mc_364161.Wmunu_PTV70_140_BFilter.1lep.root
+    xsec: 76.213179
+    sumw: 7990084.35926
+    eff: 1.0
+  Wmunu_PTV140_280_CVetoBVeto:
+    type: mc
+    dsid: 364162
+    file: 1lep/MC/mc_364162.Wmunu_PTV140_280_CVetoBVeto.1lep.root
+    xsec: 198.635592
+    sumw: 6155495.28527
+    eff: 1.0
+  Wmunu_PTV140_280_CFilterBVeto:
+    type: mc
+    dsid: 364163
+    file: 1lep/MC/mc_364163.Wmunu_PTV140_280_CFilterBVeto.1lep.root
+    xsec: 96.233222
+    sumw: 5260811.17463
+    eff: 1.0
+  Wmunu_PTV140_280_BFilter:
+    type: mc
+    dsid: 364164
+    file: 1lep/MC/mc_364164.Wmunu_PTV140_280_BFilter.1lep.root
+    xsec: 36.348467
+    sumw: 7271557.26566
+    eff: 1.0
+  Wmunu_PTV280_500_CVetoBVeto:
+    type: mc
+    dsid: 364165
+    file: 1lep/MC/mc_364165.Wmunu_PTV280_500_CVetoBVeto.1lep.root
+    xsec: 38.299835
+    sumw: 4325283.67358
+    eff: 1.0
+  Wmunu_PTV280_500_CFilterBVeto:
+    type: mc
+    dsid: 364166
+    file: 1lep/MC/mc_364166.Wmunu_PTV280_500_CFilterBVeto.1lep.root
+    xsec: 22.395647
+    sumw: 2783968.68238
+    eff: 1.0
+  Wmunu_PTV280_500_BFilter:
+    type: mc
+    dsid: 364167
+    file: 1lep/MC/mc_364167.Wmunu_PTV280_500_BFilter.1lep.root
+    xsec: 8.768196
+    sumw: 2835707.22044
+    eff: 1.0
+  Wmunu_PTV500_1000:
+    type: mc
+    dsid: 364168
+    file: 1lep/MC/mc_364168.Wmunu_PTV500_1000.1lep.root
+    xsec: 14.558821
+    sumw: 5941704.99235
+    eff: 1.0
+  Wmunu_PTV1000:
+    type: mc
+    dsid: 364169
+    file: 1lep/MC/mc_364169.Wmunu_PTV1000_E_CMS.1lep.root
+    xsec: 1.198003
+    sumw: 4068015.22447
+    eff: 1.0
+  Wenu_PTV0_70_CVetoBVeto:
+    type: mc
+    dsid: 364170
+    file: 1lep/MC/mc_364170.Wenu_PTV0_70_CVetoBVeto.1lep.root
+    xsec: 15324.216356
+    sumw: 16615214.8608
+    eff: 1.0
+  Wenu_PTV0_70_CFilterBVeto:
+    type: mc
+    dsid: 364171
+    file: 1lep/MC/mc_364171.Wenu_PTV0_70_CFilterBVeto.1lep.root
+    xsec: 2430.656322
+    sumw: 5647044.71225
+    eff: 1.0
+  Wenu_PTV0_70_BFilter:
+    type: mc
+    dsid: 364172
+    file: 1lep/MC/mc_364172.Wenu_PTV0_70_BFilter.1lep.root
+    xsec: 832.203758
+    sumw: 10407897.8772
+    eff: 1.0
+  Wenu_PTV70_140_CVetoBVeto:
+    type: mc
+    dsid: 364173
+    file: 1lep/MC/mc_364173.Wenu_PTV70_140_CVetoBVeto.1lep.root
+    xsec: 618.6882
+    sumw: 5098540.19503
+    eff: 1.0
+  Wenu_PTV70_140_CFilterBVeto:
+    type: mc
+    dsid: 364174
+    file: 1lep/MC/mc_364174.Wenu_PTV70_140_CFilterBVeto.1lep.root
+    xsec: 223.63946
+    sumw: 3661915.17878
+    eff: 1.0
+  Wenu_PTV70_140_BFilter:
+    type: mc
+    dsid: 364175
+    file: 1lep/MC/mc_364175.Wenu_PTV70_140_BFilter.1lep.root
+    xsec: 94.875534
+    sumw: 3980401.78673
+    eff: 1.0
+  Wenu_PTV140_280_CVetoBVeto:
+    type: mc
+    dsid: 364176
+    file: 1lep/MC/mc_364176.Wenu_PTV140_280_CVetoBVeto.1lep.root
+    xsec: 197.343129
+    sumw: 6121546.03361
+    eff: 1.0
+  Wenu_PTV140_280_CFilterBVeto:
+    type: mc
+    dsid: 364177
+    file: 1lep/MC/mc_364177.Wenu_PTV140_280_CFilterBVeto.1lep.root
+    xsec: 96.277568
+    sumw: 5263243.42582
+    eff: 1.0
+  Wenu_PTV140_280_BFilter:
+    type: mc
+    dsid: 364178
+    file: 1lep/MC/mc_364178.Wenu_PTV140_280_BFilter.1lep.root
+    xsec: 35.917295
+    sumw: 7327201.08884
+    eff: 1.0
+  Wenu_PTV280_500_CVetoBVeto:
+    type: mc
+    dsid: 364179
+    file: 1lep/MC/mc_364179.Wenu_PTV280_500_CVetoBVeto.1lep.root
+    xsec: 38.340533
+    sumw: 4312357.01458
+    eff: 1.0
+  Wenu_PTV280_500_CFilterBVeto:
+    type: mc
+    dsid: 364180
+    file: 1lep/MC/mc_364180.Wenu_PTV280_500_CFilterBVeto.1lep.root
+    xsec: 22.36999
+    sumw: 2778654.28759
+    eff: 1.0
+  Wenu_PTV280_500_BFilter:
+    type: mc
+    dsid: 364181
+    file: 1lep/MC/mc_364181.Wenu_PTV280_500_BFilter.1lep.root
+    xsec: 9.586345
+    sumw: 2835314.68179
+    eff: 1.0
+  Wenu_PTV500_1000:
+    type: mc
+    dsid: 364182
+    file: 1lep/MC/mc_364182.Wenu_PTV500_1000.1lep.root
+    xsec: 14.598599
+    sumw: 6003269.52809
+    eff: 1.0
+  Wenu_PTV1000:
+    type: mc
+    dsid: 364183
+    file: 1lep/MC/mc_364183.Wenu_PTV1000_E_CMS.1lep.root
+    xsec: 1.197518
+    sumw: 4075236.23897
+    eff: 1.0
+  Wtaunu_PTV0_70_CVetoBVeto:
+    type: mc
+    dsid: 364184
+    file: 1lep/MC/mc_364184.Wtaunu_PTV0_70_CVetoBVeto.1lep.root
+    xsec: 15324.887336
+    sumw: 11929044.1188
+    eff: 1.0
+  Wtaunu_PTV0_70_CFilterBVeto:
+    type: mc
+    dsid: 364185
+    file: 1lep/MC/mc_364185.Wtaunu_PTV0_70_CFilterBVeto.1lep.root
+    xsec: 2443.425881
+    sumw: 5671521.55269
+    eff: 1.0
+  Wtaunu_PTV0_70_BFilter:
+    type: mc
+    dsid: 364186
+    file: 1lep/MC/mc_364186.Wtaunu_PTV0_70_BFilter.1lep.root
+    xsec: 837.531038
+    sumw: 10498770.1084
+    eff: 1.0
+  Wtaunu_PTV70_140_CVetoBVeto:
+    type: mc
+    dsid: 364187
+    file: 1lep/MC/mc_364187.Wtaunu_PTV70_140_CVetoBVeto.1lep.root
+    xsec: 620.166885
+    sumw: 5427023.47527
+    eff: 1.0
+  Wtaunu_PTV70_140_CFilterBVeto:
+    type: mc
+    dsid: 364188
+    file: 1lep/MC/mc_364188.Wtaunu_PTV70_140_CFilterBVeto.1lep.root
+    xsec: 222.595303
+    sumw: 3719117.16117
+    eff: 1.0
+  Wtaunu_PTV70_140_BFilter:
+    type: mc
+    dsid: 364189
+    file: 1lep/MC/mc_364189.Wtaunu_PTV70_140_BFilter.1lep.root
+    xsec: 95.365521
+    sumw: 3969118.20687
+    eff: 1.0
+  Wtaunu_PTV140_280_CVetoBVeto:
+    type: mc
+    dsid: 364190
+    file: 1lep/MC/mc_364190.Wtaunu_PTV140_280_CVetoBVeto.1lep.root
+    xsec: 197.370776
+    sumw: 6166514.76606
+    eff: 1.0
+  Wtaunu_PTV140_280_CFilterBVeto:
+    type: mc
+    dsid: 364191
+    file: 1lep/MC/mc_364191.Wtaunu_PTV140_280_CFilterBVeto.1lep.root
+    xsec: 93.808553
+    sumw: 5085280.31607
+    eff: 1.0
+  Wtaunu_PTV140_280_BFilter:
+    type: mc
+    dsid: 364192
+    file: 1lep/MC/mc_364192.Wtaunu_PTV140_280_BFilter.1lep.root
+    xsec: 34.639523
+    sumw: 7291603.73991
+    eff: 1.0
+  Wtaunu_PTV280_500_CVetoBVeto:
+    type: mc
+    dsid: 364193
+    file: 1lep/MC/mc_364193.Wtaunu_PTV280_500_CVetoBVeto.1lep.root
+    xsec: 38.34009
+    sumw: 4322848.66983
+    eff: 1.0
+  Wtaunu_PTV280_500_CFilterBVeto:
+    type: mc
+    dsid: 364194
+    file: 1lep/MC/mc_364194.Wtaunu_PTV280_500_CFilterBVeto.1lep.root
+    xsec: 22.268425
+    sumw: 2772305.06916
+    eff: 1.0
+  Wtaunu_PTV280_500_BFilter:
+    type: mc
+    dsid: 364195
+    file: 1lep/MC/mc_364195.Wtaunu_PTV280_500_BFilter.1lep.root
+    xsec: 9.490847
+    sumw: 2830341.62344
+    eff: 1.0
+  Wtaunu_PTV500_1000:
+    type: mc
+    dsid: 364196
+    file: 1lep/MC/mc_364196.Wtaunu_PTV500_1000.1lep.root
+    xsec: 14.60345
+    sumw: 5932750.60186
+    eff: 1.0
+  Wtaunu_PTV1000:
+    type: mc
+    dsid: 364197
+    file: 1lep/MC/mc_364197.Wtaunu_PTV1000_E_CMS.1lep.root
+    xsec: 1.197324
+    sumw: 4057477.95297
+    eff: 1.0
+groups:
+  data:
+  - data_A
+  - data_B
+  - data_C
+  - data_D
+  diboson:
+  - ZqqZll
+  - WqqZll
+  - WpqqWmlv
+  - WplvWmqq
+  - WlvZqq
+  - llll
+  - lllv
+  - llvv
+  - lvvv
+  Zjets:
+  - Zee
+  - Zmumu
+  - Ztautau
+  stop:
+  - single_top_tchan
+  - single_antitop_tchan
+  - single_top_wtchan
+  - single_antitop_wtchan
+  - single_top_schan
+  - single_antitop_schan
+  ttbar:
+  - ttbar_lep
+  Wjets:
+  - Wmunu_PTV0_70_CVetoBVeto
+  - Wmunu_PTV0_70_CFilterBVeto
+  - Wmunu_PTV0_70_BFilter
+  - Wmunu_PTV70_140_CVetoBVeto
+  - Wmunu_PTV70_140_CFilterBVeto
+  - Wmunu_PTV70_140_BFilter
+  - Wmunu_PTV140_280_CVetoBVeto
+  - Wmunu_PTV140_280_CFilterBVeto
+  - Wmunu_PTV140_280_BFilter
+  - Wmunu_PTV280_500_CVetoBVeto
+  - Wmunu_PTV280_500_CFilterBVeto
+  - Wmunu_PTV280_500_BFilter
+  - Wmunu_PTV500_1000
+  - Wmunu_PTV1000
+  - Wenu_PTV0_70_CVetoBVeto
+  - Wenu_PTV0_70_CFilterBVeto
+  - Wenu_PTV0_70_BFilter
+  - Wenu_PTV70_140_CVetoBVeto
+  - Wenu_PTV70_140_CFilterBVeto
+  - Wenu_PTV70_140_BFilter
+  - Wenu_PTV140_280_CVetoBVeto
+  - Wenu_PTV140_280_CFilterBVeto
+  - Wenu_PTV140_280_BFilter
+  - Wenu_PTV280_500_CVetoBVeto
+  - Wenu_PTV280_500_CFilterBVeto
+  - Wenu_PTV280_500_BFilter
+  - Wenu_PTV500_1000
+  - Wenu_PTV1000
+  - Wtaunu_PTV0_70_CVetoBVeto
+  - Wtaunu_PTV0_70_CFilterBVeto
+  - Wtaunu_PTV0_70_BFilter
+  - Wtaunu_PTV70_140_CVetoBVeto
+  - Wtaunu_PTV70_140_CFilterBVeto
+  - Wtaunu_PTV70_140_BFilter
+  - Wtaunu_PTV140_280_CVetoBVeto
+  - Wtaunu_PTV140_280_CFilterBVeto
+  - Wtaunu_PTV140_280_BFilter
+  - Wtaunu_PTV280_500_CVetoBVeto
+  - Wtaunu_PTV280_500_CFilterBVeto
+  - Wtaunu_PTV280_500_BFilter
+  - Wtaunu_PTV500_1000
+  - Wtaunu_PTV1000

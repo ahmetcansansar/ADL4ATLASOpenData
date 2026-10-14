@@ -1,0 +1,241 @@
+# WZDiBosonAnalysis: input samples, normalisation and merge groups.
+#
+# samples:  ntuple path relative to ntuple_base_url; for MC the cross-section [pb],
+#           sum of weights and filter efficiency. Each MC sample is scaled by
+#           1/(sumw*eff) after the run (XSection and Lumi are applied in the ADL).
+# groups:   samples summed by scripts/normalize_merge.py into <outdir>/<group>.root.
+analysis: WZDiBosonAnalysis
+adl: analyses/WZDiBosonAnalysis/WZDiBosonAnalysis.adl
+ntuple_base_url: http://opendata.cern.ch/eos/opendata/atlas/OutreachDatasets/2020-01-22
+normalisation:
+  source: ATLAS Open Data 13 TeV C++ framework v1.1, Plotting/inputfiles/Files_base.txt
+  formula: MC histograms x 1/(sumw*eff); Lumi and XSection are applied per event in the ADL
+samples:
+  data_A:
+    type: data
+    file: 3lep/Data/data_A.3lep.root
+  data_B:
+    type: data
+    file: 3lep/Data/data_B.3lep.root
+  data_C:
+    type: data
+    file: 3lep/Data/data_C.3lep.root
+  data_D:
+    type: data
+    file: 3lep/Data/data_D.3lep.root
+  Wplusenu:
+    type: mc
+    dsid: 361100
+    file: 3lep/MC/mc_361100.Wplusenu.3lep.root
+    xsec: 11500.4632
+    sumw: 473389396815.0
+    eff: 1.0
+  Wplusmunu:
+    type: mc
+    dsid: 361101
+    file: 3lep/MC/mc_361101.Wplusmunu.3lep.root
+    xsec: 11500.4632
+    sumw: 446507925520.0
+    eff: 1.0
+  Wplustaunu:
+    type: mc
+    dsid: 361102
+    file: 3lep/MC/mc_361102.Wplustaunu.3lep.root
+    xsec: 11500.4632
+    sumw: 670928468875.0
+    eff: 1.0
+  Wminusenu:
+    type: mc
+    dsid: 361103
+    file: 3lep/MC/mc_361103.Wminusenu.3lep.root
+    xsec: 8579.63498
+    sumw: 247538642447.0
+    eff: 1.0
+  Wminusmunu:
+    type: mc
+    dsid: 361104
+    file: 3lep/MC/mc_361104.Wminusmunu.3lep.root
+    xsec: 8579.63498
+    sumw: 264338188182.0
+    eff: 1.0
+  Wminustaunu:
+    type: mc
+    dsid: 361105
+    file: 3lep/MC/mc_361105.Wminustaunu.3lep.root
+    xsec: 8579.63498
+    sumw: 165195850954.0
+    eff: 1.0
+  Ztautau:
+    type: mc
+    dsid: 361108
+    file: 3lep/MC/mc_361108.Ztautau.3lep.root
+    xsec: 1950.6321
+    sumw: 56171652547.3
+    eff: 1.0
+  Zee:
+    type: mc
+    dsid: 361106
+    file: 3lep/MC/mc_361106.Zee.3lep.root
+    xsec: 1950.5295
+    sumw: 150277594200.0
+    eff: 1.0
+  Zmumu:
+    type: mc
+    dsid: 361107
+    file: 3lep/MC/mc_361107.Zmumu.3lep.root
+    xsec: 1950.6321
+    sumw: 147334691090.0
+    eff: 1.0
+  WplvWmqq:
+    type: mc
+    dsid: 363360
+    file: 3lep/MC/mc_363360.WplvWmqq.3lep.root
+    xsec: 24.724
+    sumw: 1069526.41899
+    eff: 1.0
+  WpqqWmlv:
+    type: mc
+    dsid: 363359
+    file: 3lep/MC/mc_363359.WpqqWmlv.3lep.root
+    xsec: 24.708
+    sumw: 998250.783475
+    eff: 1.0
+  ZqqZll:
+    type: mc
+    dsid: 363356
+    file: 3lep/MC/mc_363356.ZqqZll.3lep.root
+    xsec: 2.20355112
+    sumw: 3439266.11559
+    eff: 1.0
+  llll:
+    type: mc
+    dsid: 363490
+    file: 3lep/MC/mc_363490.llll.3lep.root
+    xsec: 1.2578
+    sumw: 7538705.8077
+    eff: 1.0
+  llvv:
+    type: mc
+    dsid: 363492
+    file: 3lep/MC/mc_363492.llvv.3lep.root
+    xsec: 12.466
+    sumw: 5039259.9696
+    eff: 1.0
+  lllv:
+    type: mc
+    dsid: 363491
+    file: 3lep/MC/mc_363491.lllv.3lep.root
+    xsec: 4.6049
+    sumw: 5441475.00407
+    eff: 1.0
+  lvvv:
+    type: mc
+    dsid: 363493
+    file: 3lep/MC/mc_363493.lvvv.3lep.root
+    xsec: 3.2286
+    sumw: 1727991.07441
+    eff: 1.0
+  WqqZll:
+    type: mc
+    dsid: 363358
+    file: 3lep/MC/mc_363358.WqqZll.3lep.root
+    xsec: 3.4328
+    sumw: 241438.72705
+    eff: 1.0
+  WlvZqq:
+    type: mc
+    dsid: 363489
+    file: 3lep/MC/mc_363489.WlvZqq.3lep.root
+    xsec: 11.42
+    sumw: 1111991.15979
+    eff: 1.0
+  ttbar_lep:
+    type: mc
+    dsid: 410000
+    file: 3lep/MC/mc_410000.ttbar_lep.3lep.root
+    xsec: 452.693559
+    sumw: 49386600.0
+    eff: 1.0
+  single_top_tchan:
+    type: mc
+    dsid: 410011
+    file: 3lep/MC/mc_410011.single_top_tchan.3lep.root
+    xsec: 44.152
+    sumw: 4986200.0
+    eff: 1.0
+    note: event weight uses sign(mcWeight); sumw = generated events
+  single_antitop_tchan:
+    type: mc
+    dsid: 410012
+    file: 3lep/MC/mc_410012.single_antitop_tchan.3lep.root
+    xsec: 26.276
+    sumw: 4989800.0
+    eff: 1.0
+    note: event weight uses sign(mcWeight); sumw = generated events
+  single_top_wtchan:
+    type: mc
+    dsid: 410013
+    file: 3lep/MC/mc_410013.single_top_wtchan.3lep.root
+    xsec: 35.845486
+    sumw: 4865800.0
+    eff: 1.0
+    note: event weight uses sign(mcWeight); sumw = generated events
+  single_antitop_wtchan:
+    type: mc
+    dsid: 410014
+    file: 3lep/MC/mc_410014.single_antitop_wtchan.3lep.root
+    xsec: 35.824406
+    sumw: 4945600.0
+    eff: 1.0
+    note: event weight uses sign(mcWeight); sumw = generated events
+  single_top_schan:
+    type: mc
+    dsid: 410025
+    file: 3lep/MC/mc_410025.single_top_schan.3lep.root
+    xsec: 2.06121
+    sumw: 997800.0
+    eff: 1.0
+    note: event weight uses sign(mcWeight); sumw = generated events
+  single_antitop_schan:
+    type: mc
+    dsid: 410026
+    file: 3lep/MC/mc_410026.single_antitop_schan.3lep.root
+    xsec: 1.288662
+    sumw: 995400.0
+    eff: 1.0
+    note: event weight uses sign(mcWeight); sumw = generated events
+groups:
+  data:
+  - data_A
+  - data_B
+  - data_C
+  - data_D
+  V:
+  - Wplusenu
+  - Wplusmunu
+  - Wplustaunu
+  - Wminusenu
+  - Wminusmunu
+  - Wminustaunu
+  - Ztautau
+  - Zee
+  - Zmumu
+  VV:
+  - WplvWmqq
+  - WpqqWmlv
+  - ZqqZll
+  - llll
+  - llvv
+  WZ:
+  - lllv
+  - lvvv
+  - WqqZll
+  - WlvZqq
+  top:
+  - ttbar_lep
+  - single_top_tchan
+  - single_antitop_tchan
+  - single_top_wtchan
+  - single_antitop_wtchan
+  - single_top_schan
+  - single_antitop_schan

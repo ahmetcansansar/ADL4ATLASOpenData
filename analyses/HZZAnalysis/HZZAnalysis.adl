@@ -1,0 +1,97 @@
+# HZZAnalysis -- ATLAS Open Data 13 TeV (2020 release) benchmark, ADL for CutLang
+#
+# One ADL for all samples. Event weights follow the ATLAS Open Data C++ framework:
+#   MC:   XSection * Lumi * scale factors * mcWeight, per event (below), then
+#         x 1/(sum of weights) per sample in post-processing
+#         (scripts/normalize_merge.py with config/samples/HZZAnalysis.yaml)
+#   data: 1
+# Derived from the per-sample ADLs of the paper's original workflow
+# (tools/legacy/make_unified_adls.py); event variables and regions follow the
+# ADL printed in the article.
+
+#info analysis
+#  title Review of the 13 TeV ATLAS Open Data Release
+#  experiment ATLAS
+#  id PUB-OTRC-2020-01
+#  lumi 10 fb-1
+#  sqrts 13
+#  publication https://cds.cern.ch/record/2707171
+
+### SM Z-boson Production
+object goodEles : ELE
+  select Pt(ELE) > 7
+  select absEta(ELE) < 2.47
+  select lep_ptcone30(ELE)/lep_pt(ELE) < 0.3
+  select lep_etcone20(ELE)/lep_pt(ELE) < 0.3
+  select abs(lep_z0(ELE)*sin(theta(ELE))) < 0.5
+  select abs(lep_trackd0pvunbiased(ELE))/lep_tracksigd0pvunbiased(ELE) < 5
+
+object goodMuos : MUO
+  select Pt(MUO) > 7
+  select absEta(MUO) < 2.5
+  select lep_ptcone30(MUO)/lep_pt(MUO) < 0.3
+  select lep_etcone20(MUO)/lep_pt(MUO) < 0.3
+  select abs(lep_z0(MUO)*sin(theta(MUO))) < 0.5
+  select abs(lep_trackd0pvunbiased(MUO))/lep_tracksigd0pvunbiased(MUO) < 3
+
+object goodLepts : Union(goodEles,goodMuos)
+
+object goodJets : JET
+  select Pt(JET) > 30
+  select absEta(JET) < 4.4
+
+define Lepton1 : goodLepts[-1]
+define Lepton2 : goodLepts[-2]
+define Lepton3 : goodLepts[-3]
+define Lepton4 : goodLepts[-4]
+
+define Z1 : Lepton1 Lepton2
+define Z2 : Lepton3 Lepton4
+
+define Fourlep : Lepton1 Lepton2 Lepton3 Lepton4
+
+# Z-candidate optimisation: pdgID(Z) = pdgID(l1) + pdgID(l2) is 0 only for a
+# same-flavour opposite-sign pair; the squared penalty disfavours all other pairs.
+define ChiZ1 : (m(Z1) - 91.18)^2 + (9999*pdgID(Z1))^2
+define ChiZ2 : (m(Z2) - 91.18)^2 + (9999*pdgID(Z2))^2
+
+#### weights ####
+define Sfactor : scaleFactor_ELE*scaleFactor_MUON*scaleFactor_LepTRIGGER*scaleFactor_PILEUP
+define Lumi : 10064 # 10 fb-1
+
+# Single-top samples (DSID 410011-410026) carry mis-scaled mcWeight and SumWeights
+# branches in the 2020 ntuples; as in the original workflow only sign(mcWeight)
+# is used and the sum of weights is the number of generated events.
+define isSingleTop = HSTEP(channelNumber > 410010) * HSTEP(channelNumber < 410027)
+define mcW = isSingleTop * (HSTEP(mcWeight) - HSTEP(0 - mcWeight)) + (1 - isSingleTop) * mcWeight
+define totweight : XSection*mcW*Sfactor*Lumi
+
+define totalWeight : HSTEP(channelNumber < 310000) * 1 + HSTEP(channelNumber > 310000) * totweight
+# For data, total weight = 1
+
+region preselections
+  select ALL
+  weight evtWeight totalWeight
+  select trigE == 1 OR trigM == 1
+  select Size(goodLepts) == 4
+  sort Pt(goodLepts) descend
+
+region HZZAnalysis
+  preselections
+  select Pt(goodLepts[0]) > 25
+  select Pt(goodLepts[1]) > 15
+  select Pt(goodLepts[2]) > 10
+  select ChiZ1 ~= 0
+  select ChiZ2 ~= 0
+  select pdgID(Z1) == 0 AND pdgID(Z2) == 0
+  histo hPtlep, "Pt leps; pt_{4l} [GeV];Events / bin", 5, 0, 200, Pt(goodLepts)
+  histo hEtalep, "Leptons Pseudorapidity; #eta^{all lep}; Leptons / bin", 10, -3, 3, Eta(goodLepts)
+  histo hPhilep,   " Leptons Azimuthal Angle ; #phi^{all lep}; Leptons / bin", 8, -3.2, 3.2,Phi(goodLepts)
+  histo hElep, " Leptons Energy; E^{all lep} [GeV]; Leptons / bin", 10, 0, 300,E(goodLepts)
+  histo hIDlep, " Leptons Absolute PDG ID; |PDG ID|^{all lep}; Leptons / bin",  15, 5.5, 20.5, abs(PDGID(goodLepts))
+  histo hQlep, " Leptons Charge; Q^{all lep}; Leptons / bin", 7, -1.75, 1.75, q(goodLepts)
+  histo hNjet, "Number of Jets;N_{jets};Events", 4, -0.5, 3.5, Size(goodJets)
+  histo hZ1mass, "Mass of Dilepton System; m_{ll,1} [GeV];Events / bin", 30, 50, 106, m(Z1)
+  histo hZ2mass, "Mass of Dilepton System; m_{ll,2} [GeV];Events / bin", 30, 12, 140, m(Z2)
+  histo h4lmass, "Mass of four-lepton system; m_{4l} [GeV];Events / bin", 24, 80, 170,m(Fourlep)
+  histo h4lpt, "Transverse Momentum of four-lepton system; p_{T,4l} [GeV];Events / bin", 20, 0, 200,Pt(Fourlep)

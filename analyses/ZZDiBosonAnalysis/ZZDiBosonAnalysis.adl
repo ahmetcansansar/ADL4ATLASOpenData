@@ -1,0 +1,83 @@
+# ZZDiBosonAnalysis -- ATLAS Open Data 13 TeV (2020 release) benchmark, ADL for CutLang
+#
+# One ADL for all samples. Event weights follow the ATLAS Open Data C++ framework:
+#   MC:   XSection * Lumi * scale factors * mcWeight, per event (below), then
+#         x 1/(sum of weights) per sample in post-processing
+#         (scripts/normalize_merge.py with config/samples/ZZDiBosonAnalysis.yaml)
+#   data: 1
+# Derived from the per-sample ADLs of the paper's original workflow
+# (tools/legacy/make_unified_adls.py); event variables and regions follow the
+# ADL printed in the article (same definitions and preselections as HZZ).
+
+object goodEles : ELE
+  select Pt(ELE) > 20
+  select absEta(ELE) < 2.47
+  select lep_isTightID(ELE) == 1
+  select lep_ptcone30(ELE)/lep_pt(ELE) < 0.15
+  select lep_etcone20(ELE)/lep_pt(ELE) < 0.15
+  select abs(lep_z0(ELE)*sin(theta(ELE))) < 0.5
+  select abs(lep_trackd0pvunbiased(ELE))/lep_tracksigd0pvunbiased(ELE) < 5
+
+
+
+object goodMuos : MUO
+  select Pt(MUO) > 20
+  select absEta(MUO) < 2.5
+  select lep_isTightID(MUO) == 1
+  select lep_ptcone30(MUO)/lep_pt(MUO) < 0.15
+  select lep_etcone20(MUO)/lep_pt(MUO) < 0.15
+  select abs(lep_z0(MUO)*sin(theta(MUO))) < 0.5
+  select abs(lep_trackd0pvunbiased(MUO))/lep_tracksigd0pvunbiased(MUO) < 3
+
+object goodLepts : Union(goodEles, goodMuos)
+
+define Lepton1 : goodLepts[-1]
+define Lepton2 : goodLepts[-2]
+define Lepton3 : goodLepts[-3]
+define Lepton4 : goodLepts[-4]
+
+define Z1 : Lepton1 Lepton2
+define Z2 : Lepton3 Lepton4
+
+# Z-candidate optimisation (as in HZZ): pdgID(Z) = pdgID(l1) + pdgID(l2) is 0 only for a
+# same-flavour opposite-sign pair; the squared penalty disfavours all other pairs.
+define ChiZ1 : (m(Z1) - 91.18)^2 + (9999*pdgID(Z1))^2
+define ChiZ2 : (m(Z2) - 91.18)^2 + (9999*pdgID(Z2))^2
+
+# sum of the two Z mass-window deviations
+define ZZsum : abs(m(Z1) - 91.18) + abs(m(Z2) - 91.18)
+
+define Sfactor : scaleFactor_ELE*scaleFactor_MUON*scaleFactor_LepTRIGGER*scaleFactor_PILEUP
+
+define Lumi : 10064
+
+# Single-top samples (DSID 410011-410026) carry mis-scaled mcWeight and SumWeights
+# branches in the 2020 ntuples; as in the original workflow only sign(mcWeight)
+# is used and the sum of weights is the number of generated events.
+define isSingleTop = HSTEP(channelNumber > 410010) * HSTEP(channelNumber < 410027)
+define mcW = isSingleTop * (HSTEP(mcWeight) - HSTEP(0 - mcWeight)) + (1 - isSingleTop) * mcWeight
+define eventweight : XSection*mcW*Sfactor*Lumi
+# data (channelNumber = run number < 310000) gets weight 1
+define totalWeight : HSTEP(channelNumber < 310000) * 1 + HSTEP(channelNumber > 310000) * eventweight
+
+region preselections
+  select ALL
+  weight evtWeight totalWeight
+  select trigE == 1 OR trigM == 1
+  select Size(goodLepts) == 4
+  sort Pt(goodLepts) descend
+
+region ZZDibosonAnalysis
+  preselections
+  select ChiZ1 ~= 0
+  select ChiZ2 ~= 0
+  select pdgID(Z1) == 0 AND pdgID(Z2) == 0
+  select ZZsum < 50
+  histo hPtlep, " Leptons Transverse Momentum;p_{T}^{all lep} [GeV]; Leptons / bin", 20, 0, 200, Pt(goodLepts)
+  histo hEtalep, "Leptons Pseudorapidity; #eta^{all lep}; Leptons / bin", 10, -3, 3, Eta(goodLepts)
+  histo hPhilep,   " Leptons Azimuthal Angle ; #phi^{all lep}; Leptons / bin", 16, -3.2, 3.2,Phi(goodLepts)
+  histo hElep, " Leptons Energy; E^{all lep} [GeV]; Leptons / bin", 20, 0, 300,E(goodLepts)
+  histo hIDlep, " Leptons Absolute PDG ID; |PDG ID|^{all lep}; Leptons / bin",  15, 5.5, 20.5, abs(PDGID(goodLepts))
+  histo hQlep, " Leptons Charge; Q^{all lep}; Leptons / bin", 7, -1.75, 1.75, q(goodLepts)
+  histo hZ1mass,  " Mass of Dilepton System; m_{ll,1} [GeV];Events / bin", 18, 64, 118, m(Z1)
+  histo hZ2mass, " Mass of Dilepton System; m_{ll,2} [GeV];Events / bin", 18, 64, 118, m(Z2)

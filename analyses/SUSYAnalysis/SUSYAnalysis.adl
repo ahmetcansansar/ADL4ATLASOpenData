@@ -119,7 +119,6 @@ region preselections
     select Size(baselineEles) >= 0
     select Size(baselineMuos) >= 0
     select Size(baselineLeps) >= 0
-    sort Pt(baselineLeps) descend
     select Size(baselineBJets) >= 0
     select Size(baselineNonBJets) >= 0
     select Size(cleanElesA) >= 0
@@ -130,7 +129,6 @@ region preselections
     select Size(signalMuos) >= 0
     select trigE == 1 OR trigM == 1
     select Size(signalLeps) == 2
-    sort Pt(signalLeps) descend
     select Pt(leadLept) > 25
     select Pt(subleadLept) > 20
     select max(absEta(signalMuos)) < 2.4

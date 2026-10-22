@@ -117,10 +117,20 @@ region preselections
     select ALL
     weight evtweight totalWeight
     select Size(baselineEles) >= 0
+    select Size(baselineMuos) >= 0
+    select Size(baselineLeps) >= 0
+    sort Pt(baselineLeps) descend
     select Size(baselineBJets) >= 0
+    select Size(baselineNonBJets) >= 0
+    select Size(cleanElesA) >= 0
     select Size(cleanNonBJetsA) >= 0
+    select Size(cleanElesB) >= 0
+    select Size(cleanMuos) >= 0
+    select Size(signalEles) >= 0
+    select Size(signalMuos) >= 0
     select trigE == 1 OR trigM == 1
     select Size(signalLeps) == 2
+    sort Pt(signalLeps) descend
     select Pt(leadLept) > 25
     select Pt(subleadLept) > 20
     select max(absEta(signalMuos)) < 2.4

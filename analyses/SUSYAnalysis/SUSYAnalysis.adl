@@ -102,9 +102,6 @@ define leadLept    = signalLeps[0]
 define subleadLept = signalLeps[1]
 define mLL         = m(leadLept subleadLept)
 define MT2         = fMT2(leadLept, subleadLept, METLV[0])
-define isSF       = HSTEP(Abs(PDGID(leadLept)) == Abs(PDGID(subleadLept)))
-define isOS       = HSTEP(q(leadLept) * q(subleadLept) < 0)
-define isSFOS     = isSF * isOS
 
 define SF         = scaleFactor_ELE * scaleFactor_MUON * scaleFactor_LepTRIGGER * scaleFactor_PILEUP
 # Single-top samples (DSID 410011-410026) carry mis-scaled mcWeight and SumWeights
@@ -116,26 +113,10 @@ define mcMcWeight = HSTEP(channelNumber > 310000) * mcW * Lumi * XSection * SF
 define dataWeight = HSTEP(channelNumber <= 310000) * 1.0
 define totalWeight = dataWeight + mcMcWeight
 
-region initializations
+region preselections
     select ALL
-    weight myweight totalWeight
-    select Size(baselineEles) >= 0
-    select Size(baselineMuos) >= 0
-    select Size(baselineLeps) >= 0
-    sort Pt(baselineLeps) descend
-    select Size(baselineBJets) >= 0
-    select Size(baselineNonBJets) >= 0
-    select Size(cleanElesA) >= 0
-    select Size(cleanNonBJetsA) >= 0
-    select Size(cleanElesB) >= 0
-    select Size(cleanMuos) >= 0
-    select Size(signalEles) >= 0
-    select Size(signalMuos) >= 0
-
-region precuts
-    initializations
-    select trigE == 1 || trigM == 1
-    select Size(ELE) >= 2 || Size(MUO) >= 2
+    weight evtweight totalWeight
+    select trigE == 1 OR trigM == 1
     select Size(signalLeps) == 2
     select Pt(leadLept) > 25
     select Pt(subleadLept) > 20
@@ -145,9 +126,9 @@ region precuts
     select Size(JetsC) == 0
     select Size(JetsD) == 0
 
-region SR2_loose
-    precuts
-    select isSFOS == 1
+region SR2loose
+    preselections
+    select pdgID(leadLept) + pdgID(subleadLept) == 0
     reject channelNumber == 364156 && MET > 1500
     select MT2 > 100
     select mLL > 111
@@ -157,9 +138,9 @@ region SR2_loose
     histo histmt2_SR2_loose, "Stransverse Mass; M_{T2} [GeV]; Events / bin", 20, 0, 400, MT2
     histo histrebin_etmiss_SR2_loose, "Missing Transverse Momentum;E_{T}^{miss} [GeV];Events / bin", 10, 0, 300, MET
 
-region SR2_tight
-    precuts
-    select isSFOS == 1
+region SR2tight
+    preselections
+    select pdgID(leadLept) + pdgID(subleadLept) == 0
     reject channelNumber == 364156 && MET > 1500
     select MT2 > 130
     select mLL > 300

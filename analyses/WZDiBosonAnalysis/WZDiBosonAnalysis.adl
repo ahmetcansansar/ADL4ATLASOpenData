@@ -1,12 +1,4 @@
-# WZDiBosonAnalysis -- ATLAS Open Data 13 TeV (2020 release) benchmark, ADL for CutLang
-#
-# One ADL for all samples. Event weights follow the ATLAS Open Data C++ framework:
-#   MC:   XSection * Lumi * scale factors * mcWeight, per event (below), then
-#         x 1/(sum of weights) per sample in post-processing
-#         (scripts/normalize_merge.py with config/samples/WZDiBosonAnalysis.yaml)
-#   data: 1
-# Derived from ADL4LHCOpenData ATLAS-OTRC-2019-01/WZDiBosonAnalysis.adl (commit 38b90ec);
-# object and event selections are unchanged.
+# WZ Diboson Analysis
 
 info analysis
   title "Review of the 13 TeV ATLAS Open Data release"
@@ -50,14 +42,13 @@ object goodLepts : Union(goodEles, goodMuos)
 define sfc = scaleFactor_ELE*scaleFactor_MUON*scaleFactor_LepTRIGGER*scaleFactor_PILEUP
 define Lumi = 10064.0
 # Single-top samples (DSID 410011-410026) carry mis-scaled mcWeight and SumWeights
-# branches in the 2020 ntuples; as in the original workflow only sign(mcWeight)
-# is used and the sum of weights is the number of generated events.
+# branches in the 2020 ntuples; only sign(mcWeight) is used and the sum of weights
+# is the number of generated events.
 define isSingleTop = HSTEP(channelNumber > 410010) * HSTEP(channelNumber < 410027)
 define mcW = isSingleTop * (HSTEP(mcWeight) - HSTEP(0 - mcWeight)) + (1 - isSingleTop) * mcWeight
 define mcMcWeight = HSTEP(channelNumber > 310000) * mcW*Lumi*XSection*sfc
 define dataWeight = HSTEP(channelNumber < 310000) * 1.0
 define totalWeight = dataWeight + mcMcWeight
-
 
 ## EVENT VARIABLE DEFINITONS
 
@@ -72,7 +63,7 @@ define MTW = sqrt(2*Pt(Lepton3)*MET*(1 - cos(dPhi(Lepton3, METLV[0]))))
 define 3Lepton = Lepton1 Lepton2 Lepton3
 define mtwz = sqrt(2*Pt(3Lepton)*MET*(1 - cos(dPhi(3Lepton, METLV[0]))))
 
-define Chi2WZ  = ( m(Lepton12) - 91.18 )^2 + (9999*pdgID(Lepton12))^2 + 0*MTW
+define CostWZ  = ( m(Lepton12) - 91.18 )^2 + (9999*pdgID(Lepton12))^2 + 0*MTW
 
 region preselections
   select ALL
@@ -87,7 +78,7 @@ region WZDiBosonAnalysis
   select trigE == 1 OR trigM == 1
   select MET > 30.0
   select Size(goodLepts) == 3
-  select Chi2WZ ~= 0
+  select CostWZ ~= 0
   select pdgID(Lepton12) == 0
   select Pt(goodLepts) > 25.0
   select Abs(m(Lepton12) - 91.18) < 10.0

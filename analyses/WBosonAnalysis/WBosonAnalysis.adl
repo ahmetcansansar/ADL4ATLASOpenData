@@ -1,12 +1,4 @@
-# WBosonAnalysis -- ATLAS Open Data 13 TeV (2020 release) benchmark, ADL for CutLang
-#
-# One ADL for all samples. Event weights follow the ATLAS Open Data C++ framework:
-#   MC:   XSection * Lumi * scale factors * mcWeight, per event (below), then
-#         x 1/(sum of weights) per sample in post-processing
-#         (scripts/normalize_merge.py with config/samples/WBosonAnalysis.yaml)
-#   data: 1
-# Derived from the per-sample ADLs of the paper's original workflow by
-# tools/legacy/make_unified_adls.py.
+# W Boson Analysis
 
 # OBJECT SELECTION
 
@@ -37,8 +29,8 @@ object goodLepts : Union(goodEles, goodMuos)
 define sfc = scaleFactor_ELE*scaleFactor_MUON*scaleFactor_LepTRIGGER*scaleFactor_PILEUP
 define Lumi = 10064.0
 # Single-top samples (DSID 410011-410026) carry mis-scaled mcWeight and SumWeights
-# branches in the 2020 ntuples; as in the original workflow only sign(mcWeight)
-# is used and the sum of weights is the number of generated events.
+# branches in the 2020 ntuples; only sign(mcWeight) is used and the sum of weights
+# is the number of generated events.
 define isSingleTop = HSTEP(channelNumber > 410010) * HSTEP(channelNumber < 410027)
 define mcW = isSingleTop * (HSTEP(mcWeight) - HSTEP(0 - mcWeight)) + (1 - isSingleTop) * mcWeight
 define mcMcWeight = HSTEP(channelNumber > 310000) * mcW*Lumi*XSection*sfc
@@ -47,7 +39,6 @@ define totalWeight = dataWeight + mcMcWeight
 
 define leadLept = goodLepts[0]
 define mtw = sqrt(2*Pt(leadLept)*MET*(1 - cos(dPhi(leadLept, METLV[0]))))
-
 
 ## EVENT SELECTION
 region initializations

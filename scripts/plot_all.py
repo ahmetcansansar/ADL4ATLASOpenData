@@ -72,17 +72,18 @@ def plotting(region_name, hist_name, max_range):
         ZZhist = ZZfile.Get("{}/{}".format(region_name,hist_name))
         #SMhist = SMfile.Get("{}/{}".format(region_name,hist_name))
         ## Overflow
-        n_bins_sig = sighist.GetNbinsX()
-        sighist.AddBinContent(n_bins_sig, sighist.GetBinContent(n_bins_sig + 1))
+        if hist_name != "h4lmass":   # like the framework: no overflow for the four-lepton mass
+            n_bins_sig = sighist.GetNbinsX()
+            sighist.AddBinContent(n_bins_sig, sighist.GetBinContent(n_bins_sig + 1))
 
-        n_bins_others = othershist.GetNbinsX()
-        othershist.AddBinContent(n_bins_others, othershist.GetBinContent(n_bins_others + 1))
+            n_bins_others = othershist.GetNbinsX()
+            othershist.AddBinContent(n_bins_others, othershist.GetBinContent(n_bins_others + 1))
 
-        n_bins_ZZ = ZZhist.GetNbinsX()
-        ZZhist.AddBinContent(n_bins_ZZ, ZZhist.GetBinContent(n_bins_ZZ + 1))
+            n_bins_ZZ = ZZhist.GetNbinsX()
+            ZZhist.AddBinContent(n_bins_ZZ, ZZhist.GetBinContent(n_bins_ZZ + 1))
 
-        n_bins_data = datahist.GetNbinsX()
-        datahist.AddBinContent(n_bins_data, datahist.GetBinContent(n_bins_data + 1))
+            n_bins_data = datahist.GetNbinsX()
+            datahist.AddBinContent(n_bins_data, datahist.GetBinContent(n_bins_data + 1))
 
     elif analysis_name == "Zboson":
         datafile = ROOT.TFile("data.root","READ")

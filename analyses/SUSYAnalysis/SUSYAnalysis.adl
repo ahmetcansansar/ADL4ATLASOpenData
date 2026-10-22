@@ -160,6 +160,7 @@ region SR2_loose
 region SR2_tight
     precuts
     select isSFOS == 1
+    reject channelNumber == 364156 && MET > 1500
     select MT2 > 130
     select mLL > 300
 

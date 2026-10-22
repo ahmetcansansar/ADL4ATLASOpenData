@@ -116,6 +116,9 @@ define totalWeight = dataWeight + mcMcWeight
 region preselections
     select ALL
     weight evtweight totalWeight
+    select Size(baselineEles) >= 0
+    select Size(baselineBJets) >= 0
+    select Size(cleanNonBJetsA) >= 0
     select trigE == 1 OR trigM == 1
     select Size(signalLeps) == 2
     select Pt(leadLept) > 25

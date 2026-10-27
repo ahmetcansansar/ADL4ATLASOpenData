@@ -1895,10 +1895,10 @@ if __name__ == "__main__":
         plotting("TTbarAnalysis","hist_Topmass",10e3)
 
     elif analysis_name == "SUSY":
-        plotting("SR2_loose","histmt2_SR2_loose",1e5)
-        plotting("SR2_loose","histetmiss_SR2_loose",1e5)
-        plotting("SR2_tight","histmt2_SR2_tight",1e5)
-        plotting("SR2_tight","histetmiss_SR2_tight",1e5)
+        plotting("SR2loose","histmt2_SR2_loose",1e5)
+        plotting("SR2loose","histetmiss_SR2_loose",1e5)
+        plotting("SR2tight","histmt2_SR2_tight",1e5)
+        plotting("SR2tight","histetmiss_SR2_tight",1e5)
 
     elif analysis_name == "HWW":
         #plotting("HWW","histI_dPhi_LL",30e3)

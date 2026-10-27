@@ -35,7 +35,7 @@ ATLAS Open Data releases and is **not** the reference for this suite.
 | Z′ → tt̄ (boosted) | `analyses/ZPrimeBoostedAnalysis/` | 1largeRjet1lep | 64 | 4.5 GB | data, signal, ttbar, stop, V, diboson |
 
 In total, the nine analyses read 311 files (112.5 GB). The files do not have to
-be downloaded: CutLang streams them over HTTP from `opendata.cern.ch`. With a
+be downloaded: CutLang streams them over XRootD from `eospublic.cern.ch`. With a
 slow connection, download them once and run from disk with `--input-dir`; see
 [`docs/download.md`](docs/download.md) for per-analysis download lists and
 commands. The complete list of files, cross-sections and sums of weights is in
@@ -46,15 +46,18 @@ commands. The complete list of files, cross-sections and sums of weights is in
 | Software | Version used for the article | Notes |
 |---|---|---|
 | CutLang | v2.15.2 (`ad940e8`) | needs ROOT, flex and bison to build |
-| ROOT | 6.36.12 | with PyROOT, Davix/xrootd (for running using urls) |
+| ROOT | 6.36.12 | with PyROOT and XRootD (for streaming the samples) |
 | Python | 3.9 or newer | packages: `pyyaml`, `numpy`, `uproot` |
 | OS | Linux or macOS | tested on macOS 26 (arm64) |
 
-Streaming the samples over `http://` needs ROOT built with Davix (`root-config --has-davix`
-should print `yes`); ROOT's built-in web reader cannot open the `opendata.cern.ch` links.
-Alternatively, set `ntuple_base_url` in `.yaml` configs to the XRootD address
-`root://eospublic.cern.ch//eos/opendata/atlas/OutreachDatasets/2020-01-22` (needs ROOT with
-XRootD, `root-config --has-xrootd`), or download the files (`docs/download.md`).
+Streaming the samples needs ROOT built with XRootD (`root-config --has-xrootd` should
+print `yes`). The configs stream from
+`root://eospublic.cern.ch//eos/opendata/atlas/OutreachDatasets/2020-01-22`.
+The same files are also served over HTTP at
+`http://opendata.cern.ch/eos/opendata/atlas/OutreachDatasets/2020-01-22`, which needs ROOT
+built with Davix (`root-config --has-davix`) and was less reliable for long reads in our
+tests (stalled streams). Without XRootD, set `ntuple_base_url` to the HTTP address or
+download the files (`docs/download.md`).
 
 ## Installation
 
@@ -178,7 +181,7 @@ histogram by histogram, and cutflows bin by bin by label.
 ```yaml
 analysis: TTbarAnalysis
 adl: analyses/TTbarAnalysis/TTbarAnalysis.adl
-ntuple_base_url: http://opendata.cern.ch/eos/opendata/atlas/OutreachDatasets/2020-01-22
+ntuple_base_url: root://eospublic.cern.ch//eos/opendata/atlas/OutreachDatasets/2020-01-22
 samples:
   ttbar_lep:
     type: mc

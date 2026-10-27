@@ -127,8 +127,8 @@ region preselections
     select Size(cleanMuos) >= 0
     select Size(signalEles) >= 0
     select Size(signalMuos) >= 0
-    select trigE == 1 OR trigM == 1
     select Size(signalLeps) == 2
+    select (Abs(pdgID(leadLept)) == 11 AND trigE == 1) OR (Abs(pdgID(leadLept)) == 13 AND trigM == 1)
     select Pt(leadLept) > 25
     select Pt(subleadLept) > 20
     select max(absEta(signalMuos)) < 2.4

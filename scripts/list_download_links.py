@@ -16,14 +16,17 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from benchlib import REPO, load_config, sample_url  # noqa: E402
+from benchlib import REPO, load_config  # noqa: E402
+
+# the configs stream over XRootD; downloads use the HTTP address of the same EOS directory
+DOWNLOAD_BASE = "http://opendata.cern.ch/eos/opendata/atlas/OutreachDatasets/2020-01-22"
 
 GUIDE = """\
 # Downloading the input samples
 
-By default `scripts/run_analysis.py` streams the ntuples over HTTP from
-`opendata.cern.ch`. With a slow or unstable connection it is faster to download
-the files once and run from disk with `--input-dir`.
+By default `scripts/run_analysis.py` streams the ntuples over XRootD from
+`eospublic.cern.ch`. With a slow or unstable connection it is faster to download
+the files once (over HTTP, with the lists below) and run from disk with `--input-dir`.
 
 ## Download lists
 
@@ -102,11 +105,10 @@ def main():
 
     outdir = REPO / "docs" / "download"
     outdir.mkdir(parents=True, exist_ok=True)
-    per_analysis, base = {}, None
+    per_analysis = {}
     for path in sorted((REPO / "config" / "samples").glob("*.yaml")):
         cfg = load_config(path)
-        base = cfg["ntuple_base_url"]
-        urls = sorted({sample_url(cfg, s) for s in cfg["samples"].values()})
+        urls = sorted({f"{DOWNLOAD_BASE}/{s['file']}" for s in cfg["samples"].values()})
         per_analysis[cfg["analysis"]] = urls
         (outdir / f"{cfg['analysis']}.txt").write_text("\n".join(urls) + "\n")
     all_urls = sorted({u for urls in per_analysis.values() for u in urls})
@@ -125,7 +127,7 @@ def main():
     rows = [f"| {a} | [`download/{a}.txt`](download/{a}.txt) | {len(u)} | {total(u)} |"
             for a, u in per_analysis.items()]
     rows.append(f"| **all analyses** | [`download/all.txt`](download/all.txt) | {len(all_urls)} | {total(all_urls)} |")
-    (REPO / "docs" / "download.md").write_text(GUIDE.format(rows="\n".join(rows), base=base))
+    (REPO / "docs" / "download.md").write_text(GUIDE.format(rows="\n".join(rows), base=DOWNLOAD_BASE))
     missing = [u for u in all_urls if not args.no_sizes and sizes.get(u) is None]
     print(f"wrote docs/download.md and {len(per_analysis) + 1} lists in docs/download/ "
           f"({len(all_urls)} files" + (f", {len(missing)} without size" if missing else "") + ")")

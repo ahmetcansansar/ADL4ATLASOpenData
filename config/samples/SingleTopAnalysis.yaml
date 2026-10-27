@@ -6,7 +6,7 @@
 # groups:   samples summed by scripts/normalize_merge.py into <outdir>/<group>.root.
 analysis: SingleTopAnalysis
 adl: analyses/SingleTopAnalysis/SingleTopAnalysis.adl
-ntuple_base_url: http://opendata.cern.ch/eos/opendata/atlas/OutreachDatasets/2020-01-22
+ntuple_base_url: root://eospublic.cern.ch//eos/opendata/atlas/OutreachDatasets/2020-01-22
 normalisation:
   source: ATLAS Open Data 13 TeV C++ framework v1.1, Plotting/inputfiles/Files_WBoson.txt
   formula: MC histograms x 1/(sumw*eff); Lumi and XSection are applied per event in the ADL

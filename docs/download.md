@@ -1,8 +1,8 @@
 # Downloading the input samples
 
-By default `scripts/run_analysis.py` streams the ntuples over HTTP from
-`opendata.cern.ch`. With a slow or unstable connection it is faster to download
-the files once and run from disk with `--input-dir`.
+By default `scripts/run_analysis.py` streams the ntuples over XRootD from
+`eospublic.cern.ch`. With a slow or unstable connection it is faster to download
+the files once (over HTTP, with the lists below) and run from disk with `--input-dir`.
 
 ## Download lists
 

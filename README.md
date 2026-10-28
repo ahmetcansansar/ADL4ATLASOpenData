@@ -8,7 +8,7 @@ results of the accompanying article:
 
 - one ADL file per analysis, used for all data and simulated samples;
 - per-analysis sample configurations: input files, cross-sections, sums of weights, merge groups;
-- scripts to run CutLang over the samples, normalise the simulated samples and merge them into plot groups;
+- scripts to run CutLang over the samples, normalise the simulated samples and merge them into each process category, such as Z+jets, Single top;
 - tools to compare outputs bin by bin.
 
 The analyses reproduce the educational analyses of the
@@ -77,7 +77,7 @@ python3 -c "import ROOT"              # check that PyROOT is available
 
 ## Quick start (a few minutes)
 
-Run the Z boson analysis on three small samples and the first 20 000 events of
+Run the Z boson analysis inside the main directory (ADL4ATLASOpenData) on three small samples and the first 20 000 events of
 one data period, then normalise and merge:
 
 ```bash
@@ -146,17 +146,15 @@ the ADL statement).
 
 ## Event weights and normalisation
 
-- **Data:** weight 1.
+- **Data:** weight = 1.
 - **Simulation:** each event is weighted by `XSection × Lumi × scale factors × mcWeight`
   in the ADL (`Lumi` = 10064 pb⁻¹). After the run, each sample is scaled by
   `1/(sumw × eff)`, using the sums of weights and efficiencies of the reference
   framework (`Plotting/inputfiles/Files_*.txt` at tag `10fb-legacy`). These values
   are recorded per sample in `config/samples/<analysis>.yaml`. This is the
   same normalisation the reference framework applies.
-- **Single-top samples** (DSID 410011–410026) use `sign(mcWeight)`, and their sum
+- **Single-top samples** (DSID 410011–410026) use the sign of `mcWeight`, not the actual value and their sum
   of weights is the number of generated events, as in the reference framework.
-  The `mcWeight` and `SumWeights` branches of these ntuples are mis-scaled, so no
-  sample is normalised with the ntuple `SumWeights` branch.
 - **Data vs simulation** is decided in the ADL by `channelNumber`, which holds
   the run number for data (< 310000). The Z′ signal (DSID 301325) is excluded
   from this test explicitly.

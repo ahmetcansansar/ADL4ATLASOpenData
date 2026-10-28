@@ -45,7 +45,7 @@ commands. The complete list of files, cross-sections and sums of weights is in
 
 | Software | Version used for the article | Notes |
 |---|---|---|
-| CutLang | v2.15.2 (`ad940e8`) | needs ROOT, flex and bison to build |
+| CutLang | v2.16.0 (`1f880fc`) | needs ROOT, flex and bison to build |
 | ROOT | 6.36.12 | with PyROOT and XRootD (for streaming the samples) |
 | Python | 3.9 or newer | packages: `pyyaml`, `numpy`, `uproot` |
 | OS | Linux or macOS | tested on macOS 26 (arm64) |
@@ -64,7 +64,7 @@ download the files (`docs/download.md`).
 ```bash
 # 1. CutLang at the release used for the article
 git clone https://github.com/unelg/CutLang.git
-cd CutLang && git checkout v2.15.2
+cd CutLang && git checkout v2.16.0
 cd CLA && make -j4 && cd ../..        # requires ROOT (root-config in PATH), flex, bison
 export CUTLANG_DIR=$PWD/CutLang
 

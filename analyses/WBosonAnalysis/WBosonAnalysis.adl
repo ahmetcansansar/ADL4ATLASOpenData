@@ -51,8 +51,8 @@ region preselections
 region WBosonAnalysis_lnu
   preselections
   weight evtWeight totalWeight
-  select trigE == 1 OR trigM == 1
   select MET > 30.0
+  select trigE == 1 OR trigM == 1
   select Size(goodLepts) == 1
   select MTW > 60.0
 

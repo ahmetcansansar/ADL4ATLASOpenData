@@ -1,6 +1,6 @@
 # Z Prime Analysis
 
-object goodEle : ELE
+object goodEles : ELE
   select Pt(ELE) > 30
   select absEta(ELE) < 2.47
   reject absEta(ELE) [] 1.37 1.52
@@ -10,7 +10,7 @@ object goodEle : ELE
   select abs(lep_trackd0pvunbiased(ELE))/lep_tracksigd0pvunbiased(ELE) < 5
   select lep_isTightID(ELE) == 1
 
-object goodMuo : MUO
+object goodMuos : MUO
   select Pt(MUO) > 30
   select absEta(MUO) < 2.5
   select lep_ptcone30(MUO)/lep_pt(MUO) < 0.15
@@ -19,41 +19,45 @@ object goodMuo : MUO
   select abs(lep_trackd0pvunbiased(MUO))/lep_tracksigd0pvunbiased(MUO) < 3
   select lep_isTightID(MUO) == 1
 
-object goodLep : Union(goodEle,goodMuo)
+object goodLepts : Union(goodEles,goodMuos)
 
-object goodJet : JET
+object goodJets
+  take JET
   select Pt(JET) > 30
-  select absEta(JET) < 2.5
-  reject Pt(JET) < 60 && absEta(JET) < 2.4 && jet_jvt(JET) < 0.59
+  select AbsEta(JET) < 2.5
+  reject Pt(JET) < 60 && AbsEta(JET) < 2.4 && jet_jvt(JET) < 0.59
 
-object goodDRJet : goodJet
-  select ALL
-  select dR(goodJet,goodLep[0]) < 2.0
+object goodDRJets
+  take goodJets
+  select dR(goodJets,goodLepts[0]) < 2
 
-object goodBJet : goodJet
-  select jet_MV2c10(goodJet) > 0.8244273
+object goodBJets
+  take goodJets
+  select jet_MV2c10(goodJets) > 0.8244273
 
-object goodFJet : FJET
-  select absEta(FJET) < 2.0
+object goodFJets
+  take FJET
+  select AbsEta(FJET) < 2
   select m(FJET) > 50
   select Pt(FJET) > 250
 
-object bsmallR : goodBJet
-   select dR(goodBJet, goodDRJet[0]) < 0.01
+object goodDRBJets
+  take goodBJets
+  select dR(goodBJets, goodDRJets[0]) < 0.01
 
-object topLRJet : goodFJet
-  select absEta(goodFJet) < 2.0
-  select m(goodFJet) > 100
-  select Pt(goodFJet) > 300 && Pt(goodFJet) < 1500
-  select Flavor(goodFJet) < 0.75
-  select dR(goodFJet, goodDRJet[0]) > 1.5
-  select dPhi(goodFJet, goodLep[0]) > 1.0
-  select dR(goodFJet, anyof(goodBJet)) < 1.0 OR Size(bsmallR) >= 1
+object topLRJets
+  take goodFJets
+  select m(goodFJets) > 100
+  select Pt(goodFJets) > 300 && Pt(goodFJets) < 1500
+  select tau32(goodFJets) < 0.75
+  select dR(goodFJets, goodDRJets[0]) > 1.5
+  select dPhi(goodFJets, goodLepts[0]) > 1
+  select dR(goodFJets, anyof(goodBJets)) < 1 OR Size(goodDRBJets) >= 1
 
-define MTW : sqrt(2*Pt(goodLep[0])*MET*(1 - cos(dPhi(goodLep[0],METLV[0]))))
+define MTW : sqrt(2*Pt(goodLepts[0])*MET*(1 - cos(dPhi(goodLepts[0],METLV[0]))))
 
-define toplep : goodDRJet[0] goodLep[0]
-define tophad : topLRJet[0]
+define toplep : goodDRJets[0] goodLepts[0]
+define tophad : topLRJets[0]
 define ttbar : toplep tophad
 
 ##### weights #####
@@ -68,33 +72,28 @@ define mcW = isSingleTop * (HSTEP(mcWeight) - HSTEP(0 - mcWeight)) + (1 - isSing
 define totweight : XSection*mcW*Sfactor*Lumi
 
 define isData : HSTEP(channelNumber < 310000) * (1 - DELTA(channelNumber - 301325))
-define totweightAuto : isData * 1 + (1 - isData) * totweight
+define totalWeight : isData * 1 + (1 - isData) * totweight
 # For data, total weight = 1
 
 region Zprime
   select ALL
-  weight eventweight totweightAuto
+  weight evtWeight totalWeight
   select Size(FJET) >= 1
   select MET > 20
-  select trigE == 1 || trigM == 1
-  select Size(goodEle) >= 0
-  select Size(goodMuo) >= 0
-  select Size(goodLep) == 1
-  Sort Pt(goodLep) descend
+  select trigE == 1 OR trigM == 1
+  select Size(goodLepts) == 1
   select (MET + MTW) > 60
-  select Size(goodBJet) >= 1
-  select Size(goodDRJet) >= 1
-
-  select Size(goodFJet) >= 0
-  histo hNlargeRjet, "Number of top-tagged Large-R Jets;N^{Large-R jets};Events", 4, -0.5, 3.5,Size(goodFJet)
-  histo hleadLRpt, "Large-R Jet Transverse Momentum;p_{T}^{Large-R jet} [GeV];Events / bin", 30, 250, 700,Pt(goodFJet)
-  histo hleadLReta, "Large-R Jet Pseudorapidity; #eta^{Large-R jet}; Events / bin", 20, -3, 3,Eta(goodFJet)
-  histo hleadLRphi, "Large-R Jet phi; #phi^{Large-R jet}; Events / bin", 12, -3.2, 3.2,Phi(goodFJet)
-  histo hleadLRm,   "Large-R Jet mass; m^{Large-R jet} [GeV]; Events / bin", 30, 50, 250,m(goodFJet)
-  select Size(topLRJet) == 1
-  histo hPttopLRjet, "Top-tagged Large-R Jet Transverse Momentum;p_{T}^{Top-tagged Large-R jet} [GeV];Events / bin", 30, 250, 700,Pt(topLRJet[0])
-  histo hEtatopLRjet, "Top-tagged Large-R Jet Pseudorapidity; #eta^{Top-tagged Large-R jet}; Events / bin", 20, -3, 3,Eta(topLRJet[0])
-  histo hPhitopLRjet, "Top-tagged Large-R Jet phi; #phi^{Top-tagged Large-R jet}; Events / bin", 12, -3.2, 3.2,Phi(topLRJet[0])
-  histo hMasstopLRjet, "Top-tagged Large-R Jet mass; m^{Top-tagged Large-R jet} [GeV]; Events / bin", 25, 100, 250,m(topLRJet[0])
-  select jet_MV2c10(goodDRJet[0]) > 0.8244273
+  select Size(goodBJets) >= 1
+  select Size(goodDRJets) >= 1
+  histo hNlargeRjet, "Number of top-tagged Large-R Jets;N^{Large-R jets};Events", 4, -0.5, 3.5,Size(goodFJets)
+  histo hleadLRpt, "Large-R Jet Transverse Momentum;p_{T}^{Large-R jet} [GeV];Events / bin", 30, 250, 700,Pt(goodFJets)
+  histo hleadLReta, "Large-R Jet Pseudorapidity; #eta^{Large-R jet}; Events / bin", 20, -3, 3,Eta(goodFJets)
+  histo hleadLRphi, "Large-R Jet phi; #phi^{Large-R jet}; Events / bin", 12, -3.2, 3.2,Phi(goodFJets)
+  histo hleadLRm,   "Large-R Jet mass; m^{Large-R jet} [GeV]; Events / bin", 30, 50, 250,m(goodFJets)
+  select Size(topLRJets) == 1
+  histo hPttopLRjet, "Top-tagged Large-R Jet Transverse Momentum;p_{T}^{Top-tagged Large-R jet} [GeV];Events / bin", 30, 250, 700,Pt(topLRJets[0])
+  histo hEtatopLRjet, "Top-tagged Large-R Jet Pseudorapidity; #eta^{Top-tagged Large-R jet}; Events / bin", 20, -3, 3,Eta(topLRJets[0])
+  histo hPhitopLRjet, "Top-tagged Large-R Jet phi; #phi^{Top-tagged Large-R jet}; Events / bin", 12, -3.2, 3.2,Phi(topLRJets[0])
+  histo hMasstopLRjet, "Top-tagged Large-R Jet mass; m^{Top-tagged Large-R jet} [GeV]; Events / bin", 25, 100, 250,m(topLRJets[0])
+  select jet_MV2c10(goodDRJets[0]) > 0.8244273
   histo httbarm, " (Almost) ttbar mass (no neutrino); m^{Top-tagged Large-R jet, Small-R jet, Lepton} [GeV]; Events / bin", 20, 400, 1600, m(ttbar)

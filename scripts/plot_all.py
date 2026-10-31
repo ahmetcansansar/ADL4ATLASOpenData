@@ -1151,16 +1151,7 @@ def plotting(region_name, hist_name, max_range):
     #ratio.GetYaxis().SetNdivisions(207)
     #ratio.GetYaxis().SetNdivisions(505) 
     ratio.SetTitle("")
-    if analysis_name == "Zboson":
-        #ratio.GetXaxis().SetTitle("#eta^{leadlep}")
-        #ratio.GetXaxis().SetTitle("#phi^{leadlep}")
-        #ratio.GetXaxis().SetTitle("p_{T}^{leadlep}[GeV]")
-        #ratio.GetXaxis().SetTitle("E^{leadlep}[GeV]")
-        #ratio.GetXaxis().SetTitle("m_{ll} [GeV]")
-        #ratio.GetXaxis().SetTitle("m_{#mu#mu} [GeV]")
-        ratio.GetXaxis().SetTitle("m_{ee} [GeV]")
-    else:
-        ratio.GetXaxis().SetTitle("{}".format(hist_title))
+    ratio.GetXaxis().SetTitle("{}".format(hist_title))
     ratio.GetXaxis().SetLabelSize(0.09) #0.09
     ratio.GetXaxis().SetLabelOffset(0.01)
     ratio.GetYaxis().SetLabelSize(0.06) #0.09
@@ -1840,13 +1831,13 @@ if __name__ == "__main__":
         plotting("HZZAnalysis","hElep",900)
 
     elif analysis_name == "Zboson":
-        plotting("Zll","hPtleadlep",1e10)
-        plotting("Zll","hEtaleadlep",1e10)
-        plotting("Zll","hPhileadlep",1e10)
-        plotting("Zll","hEleadlep",1e10)
-        plotting("Zll","hZllMass1",1e10)
-        plotting("Zmumu","hZmmMass1",1e10)
-        plotting("Zee","hZeeMass1",1e10)
+        plotting("ZBosonAnalysis_ll","hPtleadlep",1e10)
+        plotting("ZBosonAnalysis_ll","hEtaleadlep",1e10)
+        plotting("ZBosonAnalysis_ll","hPhileadlep",1e10)
+        plotting("ZBosonAnalysis_ll","hEleadlep",1e10)
+        plotting("ZBosonAnalysis_ll","hZllMass1",1e10)
+        plotting("ZBosonAnalysis_mm","hZmmMass1",1e10)
+        plotting("ZBosonAnalysis_ee","hZeeMass1",1e10)
 
     elif analysis_name == "Wboson":
         plotting("WBosonAnalysis_lnu","hist_n_jets",70e6)

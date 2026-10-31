@@ -43,7 +43,7 @@ object goodJets
   ## JVT Cleaning
   reject Pt(JET) < 60.0 && (AbsEta(JET) < 2.4 && jet_jvt(JET) < 0.59)
 
-object goodBTaggedJets
+object goodBJets
   take goodJets
   select jet_MV2c10(goodJets) > 0.8244273
 
@@ -63,9 +63,9 @@ define totalWeight = dataWeight + mcMcWeight
 
 define leadLept = goodLepts[0]  # Leading lepton
 define leadJet = goodJets[0]    # Leading jet
-define leadBJet = goodBTaggedJets[0]  # Leading b-tagged jet
+define leadBJet = goodBJets[0]  # Leading b-tagged jet
 
-define mtw = sqrt(2*Pt(leadLept)*MET*(1 - cos(dPhi(leadLept, METLV[0]))))
+define MTW = sqrt(2*Pt(leadLept)*MET*(1 - cos(dPhi(leadLept, METLV[0]))))
 
 define goodJetA = goodJets[-1]
 define goodJetB = goodJets[-2]
@@ -84,7 +84,7 @@ define Mjj2 = m(goodJetB + goodJetC)*HSTEP(Ptjj2 == PtjjMax)
 define Mjj3 = m(goodJetA + goodJetC)*HSTEP(Ptjj3 == PtjjMax)
 define mWjj = Mjj1 + Mjj2 + Mjj3
 
-region initializations
+region preselections
   weight evtWeight totalWeight
   select MET > 30.0   # GeV
   select Size(JET) > 3
@@ -93,26 +93,26 @@ region initializations
   select Size(goodLepts) >= 0
   sort Pt(goodLepts) descend
   select Size(goodJets) >= 0
-  select Size(goodBTaggedJets) >= 0
+  select Size(goodBJets) >= 0
 
 region TTbarAnalysis
-  initializations
-  select trigE == 1 || trigM == 1
+  preselections
+  select trigE == 1 OR trigM == 1
   select Size(goodLepts) == 1  # Exactly one good lepton
   select Size(goodJets) >= 4  # At least four good jets
-  select Size(goodBTaggedJets) >= 2  # At least two b−tagged jets
+  select Size(goodBJets) >= 2  # At least two b−tagged jets
 
-  select mtw > 30.0   # MTW > 30 GeV W decaying leptonically
+  select MTW > 30.0   # MTW > 30 GeV W decaying leptonically
 
   histo hist_etmiss, "Missing Transverse Momentum;E_{T}^{miss} [GeV];Events / bin", 20, 0, 300, MET
-  histo hist_mtw, "Transverse Mass; M^{W}_{T} [GeV];Events / bin", 20, 0, 300, mtw
+  histo hist_mtw, "Transverse Mass; M^{W}_{T} [GeV];Events / bin", 20, 0, 300, MTW
 
   histo hist_n_jets,         "Number of Jets;N_{jets};Events", 5, 3.5, 8.5, Size(goodJets)
   histo hist_leadjet_pt,     "Leading Jet Transverse Momentum;p_{T}^{jet} [GeV];Events / bin", 20, 0, 450, Pt(goodJets)
   histo hist_leadjet_eta,    "Leading Jet Pseudorapidity; #eta^{jet}; Events / bin", 30, -3, 3, Eta(goodJets)
-  histo hist_n_bjets,        "Number of b-jets;N_{b-jets};Events", 3, 1.5, 4.5, Size(goodBTaggedJets)
-  histo hist_leadbjet_pt,    "Leading b-jet Transverse Momentum;p_{T}^{b-jet} [GeV];Events / bin", 20, 0, 350, Pt(goodBTaggedJets)
-  histo hist_leadbjet_eta,   "Leading b-jet Pseudorapidity; #eta^{b-jet}; Events / bin", 30, -3, 3, Eta(goodBTaggedJets)
+  histo hist_n_bjets,        "Number of b-jets;N_{b-jets};Events", 3, 1.5, 4.5, Size(goodBJets)
+  histo hist_leadbjet_pt,    "Leading b-jet Transverse Momentum;p_{T}^{b-jet} [GeV];Events / bin", 20, 0, 350, Pt(goodBJets)
+  histo hist_leadbjet_eta,   "Leading b-jet Pseudorapidity; #eta^{b-jet}; Events / bin", 30, -3, 3, Eta(goodBJets)
 
   histo hist_leadleptpt  , "Leading Lepton Transverse Momentum;p_{T}^{leadlep} [GeV];Events / bin", 20, 0, 200, Pt(leadLept)
   histo hist_leadlepteta , "Leading Lepton Pseudorapidity; #eta^{leadlep}; Events / bin", 30, -3, 3, Eta(leadLept)
@@ -124,9 +124,9 @@ region TTbarAnalysis
   histo hist_n_jets,         "Number of Jets;N_{jets};Events", 5, 3.5, 8.5, Size(goodJets)
   histo hist_leadjet_pt,     "Leading Jet Transverse Momentum;p_{T}^{jet} [GeV];Events / bin", 20, 0, 450, Pt(goodJets)
   histo hist_leadjet_eta,    "Leading Jet Pseudorapidity; #eta^{jet}; Events / bin", 30, -3, 3, Eta(goodJets)
-  histo hist_n_bjets,        "Number of b-jets;N_{b-jets};Events", 3, 1.5, 4.5, Size(goodBTaggedJets)
-  histo hist_leadbjet_pt,    "Leading b-jet Transverse Momentum;p_{T}^{b-jet} [GeV];Events / bin", 20, 0, 350, Pt(goodBTaggedJets)
-  histo hist_leadbjet_eta,   "Leading b-jet Pseudorapidity; #eta^{b-jet}; Events / bin", 30, -3, 3, Eta(goodBTaggedJets)
+  histo hist_n_bjets,        "Number of b-jets;N_{b-jets};Events", 3, 1.5, 4.5, Size(goodBJets)
+  histo hist_leadbjet_pt,    "Leading b-jet Transverse Momentum;p_{T}^{b-jet} [GeV];Events / bin", 20, 0, 350, Pt(goodBJets)
+  histo hist_leadbjet_eta,   "Leading b-jet Pseudorapidity; #eta^{b-jet}; Events / bin", 30, -3, 3, Eta(goodBJets)
   # finding largest pT of 3-jet system
   select Ptjjj ~= 99999
 

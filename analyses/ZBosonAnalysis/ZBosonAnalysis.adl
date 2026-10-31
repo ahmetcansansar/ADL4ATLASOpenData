@@ -8,7 +8,7 @@
 #  sqrts 13
 #  publication https://cds.cern.ch/record/2707171
 
-object goodEle : ELE
+object goodEles : ELE
   select Pt(ELE) > 25
   select absEta(ELE) < 2.47
   reject absEta(ELE) [] 1.37 1.52
@@ -18,7 +18,7 @@ object goodEle : ELE
   select abs(lep_z0(ELE)*sin(Theta(ELE))) < 0.5
   select abs(lep_trackd0pvunbiased(ELE))/lep_tracksigd0pvunbiased(ELE) < 5
 
-object goodMuo : MUO
+object goodMuos : MUO
   select Pt(MUO) > 25
   select absEta(MUO) < 2.5
   select lep_isTightID(MUO) == 1
@@ -27,7 +27,7 @@ object goodMuo : MUO
   select abs(lep_trackd0pvunbiased(MUO))/lep_tracksigd0pvunbiased(MUO) < 3
   select abs(lep_z0(MUO)*sin(Theta(MUO))) < 0.5
 
-object goodLep : Union(goodEle,goodMuo)
+object goodLepts : Union(goodEles,goodMuos)
 
 #### weights ####
 ##### weights #####
@@ -41,70 +41,57 @@ define isSingleTop = HSTEP(channelNumber > 410010) * HSTEP(channelNumber < 41002
 define mcW = isSingleTop * (HSTEP(mcWeight) - HSTEP(0 - mcWeight)) + (1 - isSingleTop) * mcWeight
 define totweight : XSection*mcW*Sfactor*Lumi
 
-define totweightAuto : HSTEP(channelNumber < 310000) * 1 + HSTEP(channelNumber > 310000) * totweight
+define totalWeight : HSTEP(channelNumber < 310000) * 1 + HSTEP(channelNumber > 310000) * totweight
 # For data, total weight = 1
 
-define Zll : goodLep[0] goodLep[1]
-define Zllwindow : abs(m(Zll) - 91.18)
+define Lepton1  : goodLepts[0]
+define Lepton2  : goodLepts[1]
+define Lepton12 : Lepton1 Lepton2
+define mLL : m(Lepton12)
+define zMassWindow : abs(mLL - 91.18)
 
-region Preselection
+region preselections
   select ALL
-  weight eventweight totweightAuto
-  select trigE == 1 || trigM == 1
-  select Size(goodEle) >= 0
-  select Size(goodMuo) >= 0
-  select Size(goodLep) == 2
-  Sort Pt(goodLep) descend
+  weight evtweight totalWeight
+  select Size(goodEles) >= 0
+  select Size(goodMuos) >= 0
+  select Size(goodLepts) >= 0
+  sort Pt(goodLepts) descend
+
+region ZBosonAnalysis_ll
+  preselections
+  select trigE == 1 OR trigM == 1
+  select Size(goodLepts) == 2
   select Size(JET) == 0
-  select q(goodLep[0])*q(goodLep[1]) < 0
-  select abs(PDGID(goodLep[0])) == abs(PDGID(goodLep[1]))
-  histo hPtleadlep,"Pt Leadlep (GeV)",20,0,200,Pt(goodLep[0])
-  histo hEtaleadlep,"Eta Leadlep",30,-3,3,Eta(goodLep[0])
-  histo hPhileadlep,"Phi Leadlep",32,-3.2,3.2,Phi(goodLep[0])
-  histo hEleadlep,"E Leadlep (GeV)",30,0,300,E(goodLep[0])
-  histo hQleadlep,"Q Leadlep",7,-1.75,1.75,q(goodLep[0])
-  histo hPDGID,"|PDGID| Leadlep",15,5.5,20.5,abs(PDGID(goodLep[0]))
+  select q(Lepton1)*q(Lepton2) < 0
+  select Abs(pdgID(Lepton1)) == Abs(pdgID(Lepton2))
+  select zMassWindow < 25
+  histo hPtleadlep,"Leading Lepton Transverse Momentum;p_{T}^{leadlep} [GeV];Events / bin",20,0,200,Pt(Lepton1)
+  histo hEtaleadlep,"Leading Lepton Pseudorapidity; #eta^{leadlep}; Events / bin",30,-3,3,Eta(Lepton1)
+  histo hPhileadlep,"Leading Lepton Azimuthal Angle ; #phi^{leadlep}; Events / bin",32,-3.2,3.2,Phi(Lepton1)
+  histo hEleadlep,"Leading Lepton Energy; E^{leadlep} [GeV]; Events / bin",30,0,300,E(Lepton1)
+  histo hQleadlep,"Leading Lepton Charge; Q^{leadlep}; Events / bin",7,-1.75,1.75,q(Lepton1)
+  histo hPDGID,"Leading Lepton Absolute PDG ID; |PDG ID|^{leadlep}; Events / bin",15,5.5,20.5,abs(PDGID(Lepton1))
+  histo hZllMass1,"Mass of Dilepton System; m_{ll} [GeV];Events / bin",30,68,114,mLL
 
-region Zee
-  Preselection
-  select Zllwindow < 25
-  select abs(PDGID(goodLep[0])) == 11
-  histo hZeeMass1,"Zee Mass (GeV)",30,68,114,m(Zll)
-  histo hPtleadlep1,"Pt Leadlep (GeV)",20,0,200,Pt(goodLep[0])
-  histo hEtaleadlep1,"Eta Leadlep",30,-3,3,Eta(goodLep[0])
-  histo hPhileadlep1,"Phi Leadlep",32,-3.2,3.2,Phi(goodLep[0])
-  histo hEleadlep1,"E Leadlep (GeV)",30,0,300,E(goodLep[0])
-  histo hQleadlep1,"Q Leadlep",7,-1.75,1.75,q(goodLep[0])
-  histo hPDGID1,"|PDGID| Leadlep",15,5.5,20.5,abs(PDGID(goodLep[0]))
+region ZBosonAnalysis_ee
+  ZBosonAnalysis_ll
+  select Abs(pdgID(Lepton1)) == 11
+  histo hZeeMass1,"Mass of Dilepton(ee) System; m_{ee} [GeV];Events / bin",30,68,114,mLL
+  histo hPtleadlep1,"Leading Lepton Transverse Momentum;p_{T}^{leadlep} [GeV];Events / bin",20,0,200,Pt(Lepton1)
+  histo hEtaleadlep1,"Leading Lepton Pseudorapidity; #eta^{leadlep}; Events / bin",30,-3,3,Eta(Lepton1)
+  histo hPhileadlep1,"Leading Lepton Azimuthal Angle ; #phi^{leadlep}; Events / bin",32,-3.2,3.2,Phi(Lepton1)
+  histo hEleadlep1,"Leading Lepton Energy; E^{leadlep} [GeV]; Events / bin",30,0,300,E(Lepton1)
+  histo hQleadlep1,"Leading Lepton Charge; Q^{leadlep}; Events / bin",7,-1.75,1.75,q(Lepton1)
+  histo hPDGID1,"Leading Lepton Absolute PDG ID; |PDG ID|^{leadlep}; Events / bin",15,5.5,20.5,abs(PDGID(Lepton1))
 
-region Zmumu
-  Preselection
-  select Zllwindow < 25
-  select abs(PDGID(goodLep[0])) == 13 || abs(PDGID(goodLep[1])) == 13
-  histo hZmmMass1,"Zmm Mass (GeV)",30,68,114,m(Zll)
-  histo hPtleadlep1,"Pt Leadlep (GeV)",20,0,200,Pt(goodLep[0])
-  histo hEtaleadlep1,"Eta Leadlep",30,-3,3,Eta(goodLep[0])
-  histo hPhileadlep1,"Phi Leadlep",32,-3.2,3.2,Phi(goodLep[0])
-  histo hEleadlep1,"E Leadlep (GeV)",30,0,300,E(goodLep[0])
-  histo hQleadlep1,"Q Leadlep",7,-1.75,1.75,q(goodLep[0])
-  histo hPDGID1,"|PDGID| Leadlep",15,5.5,20.5,abs(PDGID(goodLep[0]))
-
-region Zll
-  select ALL
-  weight eventweight totweightAuto
-  select trigE == 1 || trigM == 1
-  select Size(goodEle) >= 0
-  select Size(goodMuo) >= 0
-  select Size(goodLep) == 2
-  Sort Pt(goodLep) descend
-  select Size(JET) == 0
-  select q(goodLep[0])*q(goodLep[1]) < 0
-  select abs(PDGID(goodLep[0])) == abs(PDGID(goodLep[1]))
-  select Zllwindow < 25
-  histo hPtleadlep,"Pt Leadlep (GeV)",20,0,200,Pt(goodLep[0])
-  histo hEtaleadlep,"Eta Leadlep",30,-3,3,Eta(goodLep[0])
-  histo hPhileadlep,"Phi Leadlep",32,-3.2,3.2,Phi(goodLep[0])
-  histo hEleadlep,"E Leadlep (GeV)",30,0,300,E(goodLep[0])
-  histo hQleadlep,"Q Leadlep",7,-1.75,1.75,q(goodLep[0])
-  histo hPDGID,"|PDGID| Leadlep",15,5.5,20.5,abs(PDGID(goodLep[0]))
-  histo hZllMass1,"Zll Mass (GeV)",30,68,114,m(Zll)
+region ZBosonAnalysis_mm
+  ZBosonAnalysis_ll
+  select Abs(pdgID(Lepton1)) == 13
+  histo hZmmMass1,"Mass of Dilepton(#mu#mu) System; m_{#mu#mu} [GeV];Events / bin",30,68,114,mLL
+  histo hPtleadlep1,"Leading Lepton Transverse Momentum;p_{T}^{leadlep} [GeV];Events / bin",20,0,200,Pt(Lepton1)
+  histo hEtaleadlep1,"Leading Lepton Pseudorapidity; #eta^{leadlep}; Events / bin",30,-3,3,Eta(Lepton1)
+  histo hPhileadlep1,"Leading Lepton Azimuthal Angle ; #phi^{leadlep}; Events / bin",32,-3.2,3.2,Phi(Lepton1)
+  histo hEleadlep1,"Leading Lepton Energy; E^{leadlep} [GeV]; Events / bin",30,0,300,E(Lepton1)
+  histo hQleadlep1,"Leading Lepton Charge; Q^{leadlep}; Events / bin",7,-1.75,1.75,q(Lepton1)
+  histo hPDGID1,"Leading Lepton Absolute PDG ID; |PDG ID|^{leadlep}; Events / bin",15,5.5,20.5,abs(PDGID(Lepton1))

@@ -96,10 +96,10 @@ object signalMuos
     select lep_etcone20(cleanMuos) / lep_pt(cleanMuos) < 0.15
     select Abs(lep_trackd0pvunbiased(cleanMuos)) / lep_tracksigd0pvunbiased(cleanMuos) < 3.0
 
-object signalLeps : Union(signalEles, signalMuos)
+object signalLepts : Union(signalEles, signalMuos)
 
-define leadLept    = signalLeps[0]
-define subleadLept = signalLeps[1]
+define leadLept    = signalLepts[0]
+define subleadLept = signalLepts[1]
 define mLL         = m(leadLept subleadLept)
 define MT2         = fMT2(leadLept, subleadLept, METLV[0])
 
@@ -127,7 +127,7 @@ region preselections
     select Size(cleanMuos) >= 0
     select Size(signalEles) >= 0
     select Size(signalMuos) >= 0
-    select Size(signalLeps) == 2
+    select Size(signalLepts) == 2
     select (Abs(pdgID(leadLept)) == 11 AND trigE == 1) OR (Abs(pdgID(leadLept)) == 13 AND trigM == 1)
     select Pt(leadLept) > 25
     select Pt(subleadLept) > 20

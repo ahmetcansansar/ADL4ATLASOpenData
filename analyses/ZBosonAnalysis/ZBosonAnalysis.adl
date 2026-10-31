@@ -62,10 +62,10 @@ region ZBosonAnalysis_ll
   preselections
   select trigE == 1 OR trigM == 1
   select Size(goodLepts) == 2
-  select Size(JET) == 0
   select q(Lepton1)*q(Lepton2) < 0
   select Abs(pdgID(Lepton1)) == Abs(pdgID(Lepton2))
   select zMassWindow < 25
+  select Size(JET) == 0
   histo hPtleadlep,"Leading Lepton Transverse Momentum;p_{T}^{leadlep} [GeV];Events / bin",20,0,200,Pt(Lepton1)
   histo hEtaleadlep,"Leading Lepton Pseudorapidity; #eta^{leadlep}; Events / bin",30,-3,3,Eta(Lepton1)
   histo hPhileadlep,"Leading Lepton Azimuthal Angle ; #phi^{leadlep}; Events / bin",32,-3.2,3.2,Phi(Lepton1)
